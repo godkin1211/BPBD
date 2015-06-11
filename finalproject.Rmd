@@ -1,5 +1,5 @@
 ---
-title: "Using _crlmm_ for Genotyping in SNP arrays"
+title: "Using _crlmm_ for GWAS using SNP array data"
 author: "Chiachun Chiu  & Yenchen Hsieh"
 date: "2015年06月11日"
 output: ioslides_presentation
@@ -11,6 +11,7 @@ runtime: shiny
 1. Background
     * Single nucleotide polymorphism (_SNP_)
     * Genotyping
+    * Motivation
 2. SNP Array
     * Affymetrix oligonucleotide array
     * Illumina BeadArray
@@ -19,15 +20,18 @@ runtime: shiny
     * Requirements
 4. Demo
 
-## Background (1/2)
+## Background (1/3)
 
 + **SNP**: a DNA sequence variation occurring commonly within a population (e.g. 1%) in which a single nucleotide — A, T, C or G — in the genome (or other shared sequence) differs between members of a biological species or paired chromosomes. (from [Wikipedia](http://en.wikipedia.org/wiki/Single-nucleotide_polymorphism))
 
 ![SNP](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Dna-SNP.svg/457px-Dna-SNP.svg.png)
 
-## Background (2/2)
+## Background (2/3)
 
 + **SNP Genotyping**: the measurement of genetic variations of single nucleotide polymorphisms (SNPs) between members of a species. Genotyping is important in research of genes and gene variants associated with disease. Due to current technological limitations, almost all genotyping is partial. That is, only a small fraction of an individual’s genotype is determined, such as with RADseq. New mass-sequencing technologies promise to provide whole-genome genotyping (or whole genome sequencing) in the future. (from [Wikipedia](http://en.wikipedia.org/wiki/SNP_genotyping))
+
+## Background (3/3)
+
 
 ## SNP Array
 
