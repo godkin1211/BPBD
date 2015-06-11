@@ -1,0 +1,105 @@
+---
+title: "Using _crlmm_ for Genotyping in SNP arrays"
+author: "Chiachun Chiu  & Yenchen Hsieh"
+date: "2015年06月11日"
+output: ioslides_presentation
+runtime: shiny
+---
+
+## Outline
+
+1. Background
+    * Single nucleotide polymorphism (_SNP_)
+    * Genotyping
+2. SNP Array
+    * Affymetrix oligonucleotide array
+    * Illumina BeadArray
+3. R package: **crlmm**
+    * Short description
+    * Requirements
+4. Demo
+
+## Background (1/2)
+
++ **SNP**: a DNA sequence variation occurring commonly within a population (e.g. 1%) in which a single nucleotide — A, T, C or G — in the genome (or other shared sequence) differs between members of a biological species or paired chromosomes. (from [Wikipedia](http://en.wikipedia.org/wiki/Single-nucleotide_polymorphism))
+
+![SNP](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Dna-SNP.svg/457px-Dna-SNP.svg.png)
+
+## Background (2/2)
+
++ **SNP Genotyping**: the measurement of genetic variations of single nucleotide polymorphisms (SNPs) between members of a species. Genotyping is important in research of genes and gene variants associated with disease. Due to current technological limitations, almost all genotyping is partial. That is, only a small fraction of an individual’s genotype is determined, such as with RADseq. New mass-sequencing technologies promise to provide whole-genome genotyping (or whole genome sequencing) in the future. (from [Wikipedia](http://en.wikipedia.org/wiki/SNP_genotyping))
+
+## SNP Array
+
+SNP array is a type of DNA microarray which is used to detect polymorphisms within a population. A single nucleotide polymorphism (SNP), a variation at a single site in DNA, is the most frequent type of variation in the genome.
+
++ *Affymetrix Platform*:
+    - Human SNP 5.0/6.0 GeneChip
+    - 10K, 100K & 500K array
+    
++ *Illumina Platform*:
+    - MaizeSNP50 BeadChip
+    - PorcineSNP60 BeadChip
+    - OvineSNP50 BeadChip
+
+## R package: crlmm
+
+Faster implementation of CRLMM specific to SNP 5.0 and 6.0 arrays, as well as a copy number tool specific to 5.0, 6.0, and Illumina platforms. ([Ref](http://www.jstatsoft.org/v40/i12/))
+
+```{r fig.width=8, fig.height=4, echo=FALSE}
+if (! "png" %in% names(sessionInfo()$otherPkgs)) library(png)
+if (! "grid" %in% names(sessionInfo()$otherPkgs)) library(grid)
+img <- readPNG("./img/1.png")
+grid.raster(img)
+```
+
+## Installation of crlmm
+
+```{r, eval=FALSE}
+# Get the list of installed packages
+myPkgs <- names(installed.packages()[,'Package'])
+# We recommend installing all Pkgs listed in Depends & Suggests
+requiredPkgs <- c("oligoClasses", "preprocessCore", "hapmapsnp6", 
+                  "snpStats", "GGdata", "genomewidesnp6Crlmm")
+# Check that if we installed these packages
+requiredPkgs <- requiredPkgs[! requiredPkgs %in% myPkgs]
+# Installation
+source("http://bioconductor.org/biocLite.R")
+biocLite(requiredPkgs)
+```
+## Demo of Genotyping using crlmm (1/5)
+
+
+## Slide with Interactive Plot
+
+```{r, echo=FALSE}
+inputPanel(
+  selectInput("n_breaks", label = "Number of bins:",
+              choices = c(10, 20, 35, 50), selected = 20),
+  
+  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+              min = 0.2, max = 2, value = 1, step = 0.2)
+)
+
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Code and Output
+
+```{r}
+summary(cars)
+```
+
+
