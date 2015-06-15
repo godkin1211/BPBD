@@ -8,19 +8,23 @@ Genotyping with the crlmm Package:
 require(oligoClasses)
 library(crlmm)
 library(hapmapsnp6)
+library(genomewidesnp6Crlmm)
 path <- system.file("celFiles", package="hapmapsnp6")
-celFiles <- list.celfiles(path, full.names=TRUE)
+```
 
+```{r}
+celFiles <- list.celfiles(path, full.names=TRUE)
+crlmmResult <- crlmm(celFiles, verbose=FALSE); crlmmResult
+```
+
+```{r}
+calls(crlmmResult)[1:10,]
 ```
 
 
 
+
 ```{r}
-system.time(crlmmResult <- crlmm(celFiles, verbose=FALSE))
-
-calls(crlmmResult)[1:10,]
-
 confs(crlmmResult)[1:10,]
-
 crlmmResult[["SNR"]]
 ```

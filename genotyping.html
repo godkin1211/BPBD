@@ -66,9 +66,9 @@ img {
 
 <p>Genotyping with the crlmm Package:</p>
 <pre><code>## Loading required package: oligoClasses
-## Welcome to oligoClasses version 1.30.0
+## Welcome to oligoClasses version 1.26.0
 ## Loading required package: preprocessCore
-## Welcome to crlmm version 1.26.0
+## Welcome to crlmm version 1.22.0
 ## /-------------------------------------------\
 ## |         SAMPLE HAPMAP SNP 6.0             |
 ## |-------------------------------------------|
@@ -80,14 +80,29 @@ img {
 ## | The contents of this package are provided |
 ## | in good faith and the maintainer does not |
 ## | warrant their accuracy.                   |
-## \-------------------------------------------/</code></pre>
-<pre class="r"><code>system.time(crlmmResult &lt;- crlmm(celFiles, verbose=FALSE))</code></pre>
-<pre><code>## Annotation for genomewidesnp6Crlmm version 1.0.7 supports UCSC builds hg18 and hg19.</code></pre>
+## \-------------------------------------------/
+## Annotation for genomewidesnp6Crlmm version 1.0.7 supports UCSC builds hg18 and hg19.</code></pre>
+<pre class="r"><code>celFiles &lt;- list.celfiles(path, full.names=TRUE)
+crlmmResult &lt;- crlmm(celFiles, verbose=FALSE); crlmmResult</code></pre>
 <pre><code>## Warning in crlmmGT(res[[&quot;A&quot;]], res[[&quot;B&quot;]], res[[&quot;SNR&quot;]],
-## res[[&quot;mixtureParams&quot;]], : Recalibration not possible. Possible cause: small
-## sample size.</code></pre>
-<pre><code>##    user  system elapsed 
-## 104.088   1.020 105.095</code></pre>
+## res[[&quot;mixtureParams&quot;]], : Recalibration not possible. Possible cause:
+## small sample size.</code></pre>
+<pre><code>## SnpSet (storageMode: lockedEnvironment)
+## assayData: 906600 features, 3 samples 
+##   element names: call, callProbability 
+## protocolData: none
+## phenoData
+##   sampleNames: NA06985_GW6_C.CEL NA06991_GW6_C.CEL
+##     NA06993_GW6_C.CEL
+##   varLabels: SNR gender batchQC
+##   varMetadata: labelDescription
+## featureData
+##   featureNames: SNP_A-2131660 SNP_A-1967418 ... SNP_A-8574011
+##     (906600 total)
+##   fvarLabels: SNPQC
+##   fvarMetadata: labelDescription
+## experimentData: use 'experimentData(object)'
+## Annotation: genomewidesnp6Crlmm</code></pre>
 <pre class="r"><code>calls(crlmmResult)[1:10,]</code></pre>
 <pre><code>##               NA06985_GW6_C.CEL NA06991_GW6_C.CEL NA06993_GW6_C.CEL
 ## SNP_A-2131660                 2                 2                 3

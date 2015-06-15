@@ -1,5 +1,5 @@
 ---
-title: "Using _crlmm_ for GWAS using SNP array data"
+title: "Using _crlmm_ for GWAS on SNP array data"
 author: "Chiachun Chiu  & Yenchen Hsieh"
 date: "2015年06月11日"
 output: ioslides_presentation
@@ -16,26 +16,30 @@ runtime: shiny
     * Affymetrix oligonucleotide array
     * Illumina BeadArray
 3. R package: **crlmm**
-    * Short description
     * Requirements
+    * Installation
+    * Functions
 4. Demo
 
-## Background (1/3)
+# Background
 
+## Background (1/3)
 + **SNP**: a DNA sequence variation occurring commonly within a population (e.g. 1%) in which a single nucleotide — A, T, C or G — in the genome (or other shared sequence) differs between members of a biological species or paired chromosomes. (from [Wikipedia](http://en.wikipedia.org/wiki/Single-nucleotide_polymorphism))
 
 ![SNP](http://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Dna-SNP.svg/457px-Dna-SNP.svg.png)
 
 ## Background (2/3)
-
 + **SNP Genotyping**: the measurement of genetic variations of single nucleotide polymorphisms (SNPs) between members of a species. Genotyping is important in research of genes and gene variants associated with disease. Due to current technological limitations, almost all genotyping is partial. That is, only a small fraction of an individual’s genotype is determined, such as with RADseq. New mass-sequencing technologies promise to provide whole-genome genotyping (or whole genome sequencing) in the future. (from [Wikipedia](http://en.wikipedia.org/wiki/SNP_genotyping))
 
 ## Background (3/3)
+### Why we choose *crlmm* as the topic in final project?
++ Researches on structural variation are popular!
++ It's about the thesis of one of members in our team!
 
+#SNP Array
 
-## SNP Array
-
-SNP array is a type of DNA microarray which is used to detect polymorphisms within a population. A single nucleotide polymorphism (SNP), a variation at a single site in DNA, is the most frequent type of variation in the genome.
+##
+*SNP array* is a type of DNA microarray which is used to detect polymorphisms within a population. A single nucleotide polymorphism (SNP), a variation at a single site in DNA, is the most frequent type of variation in the genome.
 
 + *Affymetrix Platform*:
     - Human SNP 5.0/6.0 GeneChip
@@ -46,8 +50,9 @@ SNP array is a type of DNA microarray which is used to detect polymorphisms with
     - PorcineSNP60 BeadChip
     - OvineSNP50 BeadChip
 
-## R package: crlmm
+#R package: crlmm
 
+## Description & Requirements
 Faster implementation of CRLMM specific to SNP 5.0 and 6.0 arrays, as well as a copy number tool specific to 5.0, 6.0, and Illumina platforms. ([Ref](http://www.jstatsoft.org/v40/i12/))
 
 ```{r fig.width=8, fig.height=4, echo=FALSE}
@@ -71,39 +76,97 @@ requiredPkgs <- requiredPkgs[! requiredPkgs %in% myPkgs]
 source("http://bioconductor.org/biocLite.R")
 biocLite(requiredPkgs)
 ```
-## Demo of Genotyping using crlmm (1/5)
 
+# Demo of Genotyping and downstream analysis for Affymetrix SNP Array using crlmm
+
+## Load required packages
+```{r, eval=FALSE}
+library(oligoClasses)
+library(crlmm)
+library(hapmapsnp6)
+library(genomewidesnp6Crlmm)
+path <- system.file("celFiles", package="hapmapsnp6")
+```
+```{r fig.width=8.5, fig.height=3.5, echo=FALSE}
+if (! "png" %in% names(sessionInfo()$otherPkgs)) library(png)
+if (! "grid" %in% names(sessionInfo()$otherPkgs)) library(grid)
+img <- readPNG("./img/2.png")
+grid.raster(img)
+```
+
+## Run crlmm
+```{r, eval=FALSE}
+celFiles <- list.celfiles(path, full.names=TRUE)
+crlmmResult <- crlmm(celFiles, verbose=FALSE); crlmmResult
+```
+```{r fig.width=8.5, fig.height=3.5, echo=FALSE}
+if (! "png" %in% names(sessionInfo()$otherPkgs)) library(png)
+if (! "grid" %in% names(sessionInfo()$otherPkgs)) library(grid)
+img <- readPNG("./img/3.png")
+grid.raster(img)
+```
+
+## calls: genotype calls (1 - AA; 2 - AB; 3 - BB);
+```{r, eval=FALSE}
+calls(crlmmResult)[1:10,]
+```
+```{r fig.width=8.5, fig.height=3.5, echo=FALSE}
+if (! "png" %in% names(sessionInfo()$otherPkgs)) library(png)
+if (! "grid" %in% names(sessionInfo()$otherPkgs)) library(grid)
+img <- readPNG("./img/4.png")
+grid.raster(img)
+```
+
+## confs:confidence scores
+```{r, eval=FALSE}
+confs(crlmmResult)[1:10,]
+```
+```{r fig.width=8.5, fig.height=3.5, echo=FALSE}
+if (! "png" %in% names(sessionInfo()$otherPkgs)) library(png)
+if (! "grid" %in% names(sessionInfo()$otherPkgs)) library(grid)
+img <- readPNG("./img/5.png")
+grid.raster(img)
+```
 
 ## Slide with Interactive Plot
 
 ```{r, echo=FALSE}
-inputPanel(
-  selectInput("n_breaks", label = "Number of bins:",
-              choices = c(10, 20, 35, 50), selected = 20),
-  
-  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
-              min = 0.2, max = 2, value = 1, step = 0.2)
+#suppressPackageStartupMessages(library(hapmapsnp6))
+#data(crlmmResult)
+sidebarPanel(
+    selectInput("sampledata", "Choose a pre-processed data to load:", 
+                choices = c("crlmmResult","test"), selected="crlmmResult"),
+    
+    selectInput("genotypedata", "Choose a genotyping results:",
+                choices = c("GGdata","Others"), selected="GGdata")
 )
 
-renderPlot({
-  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
-       xlab = "Duration (minutes)", main = "Geyser eruption duration")
-  
-  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
-  lines(dens, col = "blue")
+mainPanel(
+    textOutput("text1"),
+    textOutput("text2")
+)
+
+
+output$text1<-renderText({
+    print(input$sampledata)
 })
+
+output$text2<-renderText({
+    print(input$genotypedata)
+})
+#inputPanel(
+#  selectInput("n_breaks", label = "Number of bins:",
+#              choices = c(10, 20, 35, 50), selected = 20),
+#  
+#  sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+#              min = 0.2, max = 2, value = 1, step = 0.2)
+#)
+
+#renderPlot({
+#  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+#       xlab = "Duration (minutes)", main = "Geyser eruption duration")
+#  
+#  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+#  lines(dens, col = "blue")
+#})
 ```
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
-
-## Slide with R Code and Output
-
-```{r}
-summary(cars)
-```
-
-
