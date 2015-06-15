@@ -1,0 +1,71 @@
+---
+title: "crlmm to downstream data analysis"
+output: html_document
+---
+
+Running CRLMM on a nontrivial set of CEL files
+```{r, echo=FALSE}
+library(crlmm)
+suppressPackageStartupMessages(library(hapmapsnp6))
+data(crlmmResult)
+class(crlmmResult)
+```
+
+Adding information to a SnpSet
+```{r, echo=FALSE}
+suppressPackageStartupMessages(library(GGdata))
+hmceuB36 <- getSS('GGdata', as.character(1:22))
+pd <- phenoData(hmceuB36)
+ggn <- sampleNames(pd)
+preSN <- sampleNames(crlmmResult)
+simpSN <- gsub("_.*", "", preSN)
+sampleNames(crlmmResult) <- simpSN
+phenoData(crlmmResult) <- combine(pd, phenoData(crlmmResult))
+```
+
+```{r}
+dim(calls(crlmmResult))
+
+calls(crlmmResult)[1:10, 1:2]
+
+confs(crlmmResult, FALSE)[1:10, 1:2]
+```
+
+Coercing to SnpMatrix as a prelude to a GWAS
+```{r, echo=FALSE}
+theCalls <- t(calls(crlmmResult))-1L
+rm(crlmmResult)
+gtypeCounts <- rbind(AA=colSums(theCalls == 0L), AB=colSums(theCalls == 1L), BB=colSums(theCalls == 2L))
+
+gtypeCounts[, 1:5]
+
+toRemove <- which(colSums(gtypeCounts == 0) == 2L)
+gtypeCounts[, toRemove[1:4]]
+theCalls <- theCalls[, -toRemove]
+suppressPackageStartupMessages(library(snpStats))
+crlmmSM <- new("SnpMatrix", theCalls)
+crlmmSM
+```
+
+Conducting a GWAS
+```{r}
+suppressPackageStartupMessages(library(illuminaHumanv1.db))
+rmm <- revmap(illuminaHumanv1SYMBOL)
+mypr <- get("CPNE1", rmm)
+ex <- as.numeric(exprs(hmceuB36)[mypr[1],])
+subjdata <- pData(hmceuB36)
+subjdata[["ex"]] <- ex
+head(subjdata)
+
+gwas <- snp.rhs.tests(ex~male, data=subjdata, snp.data=crlmmSM, family="gaussian")
+ok <- which(p.value(gwas) < 1e-10)
+gwas[ok,]
+
+snp <- names(gwas[ok,])[1]
+gtypes <- theCalls[,snp]+1L
+boxplot(ex~gtypes, xlab=paste("Genotype Call for", snp), ylab="CPNE1 Expression", xaxt="n", range=0)
+points(ex~jitter(gtypes), col=gtypes, pch=19)
+axis(1, at=1:3, labels=c("AA", "AB", "BB"))
+```
+
+

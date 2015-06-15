@@ -1,0 +1,26 @@
+---
+title: "Genotyping with the crlmm Package"
+output: html_document
+---
+
+Genotyping with the crlmm Package:
+```{r, echo=FALSE}
+require(oligoClasses)
+library(crlmm)
+library(hapmapsnp6)
+path <- system.file("celFiles", package="hapmapsnp6")
+celFiles <- list.celfiles(path, full.names=TRUE)
+
+```
+
+
+
+```{r}
+system.time(crlmmResult <- crlmm(celFiles, verbose=FALSE))
+
+calls(crlmmResult)[1:10,]
+
+confs(crlmmResult)[1:10,]
+
+crlmmResult[["SNR"]]
+```
