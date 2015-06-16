@@ -1,7 +1,7 @@
 ---
 title: "Using _crlmm_ for GWAS on SNP array data"
 author: "Chiachun Chiu  & Yenchen Hsieh"
-date: "2015年06月11日"
+date: "2015年06月17日"
 output: ioslides_presentation
 runtime: shiny
 ---
@@ -134,7 +134,7 @@ sidebarPanel(
     selectInput("sampledata", "Choose a pre-processed data to load:", 
                 choices = c("xxx","crlmmResult","test"), selected="xxx"),
     
-    selectInput("genotypedata", "Choose a genotyping results:",
+    selectInput("genotypedata", "Choose a phenotype/expression data:",
                 choices = c("ooo","GGdata","Others"), selected="ooo"),
     actionButton("action", label="Start GWAS!")
 )
