@@ -162,4 +162,10 @@ output$plot <- renderPlot({
 })
 ```
 
+## Task Assignment
+
++ Yenchen Hsieh is responsible for the reading of reference manual and constructing this project.
++ Chiachun Chiu made slides.
+
+
 # Thank you for your attention!
